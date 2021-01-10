@@ -1,48 +1,38 @@
+import os
+import csv
 from matplotlib import pyplot as plt
 import numpy as np
+from collections import Counter
 
-#plt.style.use('fivethirtyeight')
+example2dir = os.path.dirname(__file__)
 
-ages_x = [25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35]
+plt.style.use('fivethirtyeight')
 
-x_index = np.arange(len(ages_x))
-barwidth = 0.25
+with open(os.path.join(example2dir, 'data.csv'), 'r') as csv_file:
+    csv_reader = csv.DictReader(csv_file)
 
-# python devs #
-py_dev_y = [45372, 48876, 53850, 57287, 63016,
-            65998, 70003, 70000, 71496, 75370, 83640]
+    language_counter = Counter()
 
-pythonFmt="b"   # blue
-plt.bar(x_index - barwidth, py_dev_y, width=barwidth, label="Python")
-#plt.plot(ages_x, py_dev_y, color='b', linewidth=3, marker="o", label="Python")
+    for row in csv_reader:
+        language_counter.update(row['LanguagesWorkedWith'].split(';'))
 
+languages = []
+popularity = []
 
-# js devs #
-js_dev_y = [37810, 43515, 46823, 49293, 53437, 
-            56373, 62375, 66674, 68745, 68746, 74583]
-#plt.plot(ages_x, js_dev_y, color='#adad3b', linewidth=3, marker="o", label="Javascript")
-plt.bar(x_index, js_dev_y, width=barwidth, label="Javascript")
+for item in language_counter.most_common(15):
+    languages.append(item[0])
+    popularity.append(item[1])
 
 
-# all devs #
-dev_y = [38496, 42000, 46752, 49320, 53200, 
-         56000, 62316, 64928, 67317, 68748, 73752]
+languages.reverse()
+popularity.reverse()
 
-plt.bar(x_index + barwidth, dev_y, color="#444444", width=barwidth, label="All Devs")
+plt.barh(languages, popularity)
 
-plt.title("Median Salary (USD) by Age")
+plt.title("Most Popular Languages")
 
-plt.xlabel("Ages")
-plt.ylabel("Median Salary (USD)")
+plt.xlabel("Number of People Who Use")
 
-# add legend
-plt.legend()
 
-plt.xticks(ticks=x_index, labels=ages_x)
-
-#plt.grid(True)
 plt.tight_layout()
-
-plt.savefig('plot.png')
-
 plt.show()
