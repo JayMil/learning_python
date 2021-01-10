@@ -2,19 +2,21 @@ import os
 import csv
 from matplotlib import pyplot as plt
 import numpy as np
+import pandas as pd
 from collections import Counter
 
 example2dir = os.path.dirname(__file__)
 
 plt.style.use('fivethirtyeight')
 
-with open(os.path.join(example2dir, 'data.csv'), 'r') as csv_file:
-    csv_reader = csv.DictReader(csv_file)
+data = pd.read_csv(os.path.join(example2dir, 'data.csv'))
+ids = data['Responder_id']
+lang_responses = data['LanguagesWorkedWith']
 
-    language_counter = Counter()
+language_counter = Counter()
 
-    for row in csv_reader:
-        language_counter.update(row['LanguagesWorkedWith'].split(';'))
+for response in lang_responses:
+    language_counter.update(response.split(';'))
 
 languages = []
 popularity = []
